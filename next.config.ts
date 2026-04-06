@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  serverExternalPackages: [
+    'fluent-ffmpeg',
+    'better-sqlite3',
+  ],
+  experimental: {
+    serverActions: { bodySizeLimit: '500mb' },
+  },
+}
+module.exports = nextConfig

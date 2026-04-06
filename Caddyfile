@@ -1,0 +1,19 @@
+# Replace yourdomain.com with your actual domain.
+# Caddy auto-provisions HTTPS via Let's Encrypt.
+
+yourdomain.com {
+    reverse_proxy localhost:3000
+
+    # Increase timeouts for large uploads and long video processing
+    request_body {
+        max_size 500MB
+    }
+
+    header {
+        # Security headers
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        -Server
+    }
+}

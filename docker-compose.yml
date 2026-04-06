@@ -1,0 +1,56 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+  web:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      NODE_ENV: production
+    volumes:
+      - storage:/app/storage
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  worker:
+    build: .
+    restart: unless-stopped
+    command: npm run worker
+    env_file: .env
+    environment:
+      NODE_ENV: production
+    volumes:
+      - storage:/app/storage
+    depends_on:
+      - redis
+
+  # Calls /api/cleanup every hour to delete output files older than 24h
+  cron:
+    image: alpine:3.19
+    restart: unless-stopped
+    env_file: .env
+    command: >
+      /bin/sh -c
+      "apk add --no-cache wget &&
+       while true; do
+         wget -qO- --header=\"Authorization: Bearer $CLEANUP_SECRET\" http://web:3000/api/cleanup || true;
+         sleep 3600;
+       done"
+    depends_on:
+      - web
+
+volumes:
+  redis_data:
+  storage:
