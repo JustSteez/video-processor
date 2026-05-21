@@ -23,7 +23,7 @@ export async function splitVideo(
   const meta = await probeVideo(inputPath)
   const hasAudio = meta.hasAudio
 
-  const segmentTime = 7 + Math.floor(Math.random() * 4)
+  const segmentTime = 3 + Math.floor(Math.random() * 3)
   const outputPattern = path.join(outputDir, 'clip-%04d.mp4')
 
   await new Promise<void>((resolve, reject) => {
