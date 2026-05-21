@@ -13,8 +13,8 @@ export function VideoUploader({ onUploadComplete }: Props) {
   const [error, setError] = useState<string | null>(null)
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length < 2 || acceptedFiles.length > 5) {
-      setError('Upload 2 to 5 videos.')
+    if (acceptedFiles.length < 2 || acceptedFiles.length > 20) {
+      setError('Upload 2 to 20 videos.')
       return
     }
     setUploading(true)
@@ -23,7 +23,7 @@ export function VideoUploader({ onUploadComplete }: Props) {
     acceptedFiles.forEach(f => form.append('videos', f))
     try {
       const { data } = await axios.post('/api/upload', form, {
-        onUploadProgress: e => setUploadPct(Math.round((e.loaded / (e.total || 1)) * 100)),
+        onUploadProgress: e => setUploadPct(Math.round((e.loaded / (e.total || 1)) * 200)),
       })
       onUploadComplete(data.jobId, data.files)
     } catch (e: any) {
@@ -36,7 +36,7 @@ export function VideoUploader({ onUploadComplete }: Props) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { 'video/mp4': ['.mp4'], 'video/quicktime': ['.mov'] },
-    maxFiles: 5,
+    maxFiles: 20,
     disabled: uploading,
   })
 
@@ -59,7 +59,7 @@ export function VideoUploader({ onUploadComplete }: Props) {
         ) : (
           <div>
             <p className="text-xl font-medium mb-1">Drop videos here</p>
-            <p className="text-gray-400 text-sm">2–5 MP4 files · max 500MB each</p>
+            <p className="text-gray-400 text-sm">2–20 MP4 files · max 500MB each</p>
           </div>
         )}
       </div>

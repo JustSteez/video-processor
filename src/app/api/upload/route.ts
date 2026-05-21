@@ -11,8 +11,8 @@ import { connection } from '@/lib/queue/queues'
 
 export const dynamic = 'force-dynamic'
 
-// 5 uploads per IP per 10 minutes
-const RATE_LIMIT = 5
+// 20 uploads per IP per 10 minutes
+const RATE_LIMIT = 20
 const RATE_WINDOW = 60 * 10
 
 async function checkRateLimit(ip: string): Promise<boolean> {
@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData()
     const files = formData.getAll('videos') as File[]
 
-    if (files.length < 2 || files.length > 5) {
-      return NextResponse.json({ error: 'Upload 2 to 5 video files.' }, { status: 400 })
+    if (files.length < 2 || files.length > 20) {
+      return NextResponse.json({ error: 'Upload 2 to 20 video files.' }, { status: 400 })
     }
 
     // Create job record
