@@ -23,7 +23,7 @@ export function VideoUploader({ onUploadComplete }: Props) {
     acceptedFiles.forEach(f => form.append('videos', f))
     try {
       const { data } = await axios.post('/api/upload', form, {
-        onUploadProgress: e => setUploadPct(Math.round((e.loaded / (e.total || 1)) * 200)),
+        onUploadProgress: e => setUploadPct(Math.round((e.loaded / (e.total || 1)) * 100)),
       })
       onUploadComplete(data.jobId, data.files)
     } catch (e: any) {
